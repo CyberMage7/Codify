@@ -6,6 +6,7 @@ import Dashboard from "./components/dashboard/Dashboard";
 import Profile from "./components/user/Profile";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
+import RepoView from "./components/repo/RepoView";
 
 // Auth Context
 import { useAuth } from "./authContext";
@@ -45,6 +46,10 @@ const Routes = () => {
     {
       path: "/profile",
       element: <Profile />,
+    },
+    {
+      path: "/repo/:repoId",
+      element: <RepoView />,
     },
   ]);
 

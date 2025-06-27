@@ -1,31 +1,133 @@
-nav {
-    display: flex;
-    justify-content: space-between;
-    padding-bottom: 10px;
-    border-bottom: 2px solid white;
+.navbar {
+  background-color: #1a1a2e; /* Dark indigo background */
+  background-image: linear-gradient(to right, #1a1a2e, #16213e);
+  padding: 16px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  border-bottom: none;
+  position: relative;
 }
 
-nav img {
-    height: 50px;
-    border-radius: 100%;
+.navbar::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ff2a6d, #ff2a6d, transparent); /* Neon pink glow */
+  box-shadow: 0 0 8px 1px #ff2a6d;
 }
 
-nav div {
-    display: flex;
+.navbar-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  box-sizing: border-box;
 }
 
-nav h3 {
-    margin-left: 15px;
-    color: white;
+.navbar-left {
+  display: flex;
+  align-items: center;
 }
 
-nav p {
-    margin-left: 50px;
-    font-weight: bold;
-    color: white;
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
 }
 
-nav h3:hover,
-nav p:hover {
-    text-decoration: underline;
+.logo-text {
+  position: relative;
+}
+
+.logo-accent {
+  color: #ff2a6d; /* Neon pink accent */
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.user-profile {
+  position: relative;
+  cursor: pointer;
+}
+
+.user-avatar {
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.user-avatar:hover {
+  border-color: #ff2a6d; /* Neon pink accent */
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(255, 42, 109, 0.5);
+}
+
+.logout-button {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.logout-button:hover {
+  background-color: rgba(255, 42, 109, 0.2) !important;
+  box-shadow: 0 0 15px rgba(255, 42, 109, 0.3);
+  transform: translateY(-2px);
+}
+
+.logout-button:active {
+  transform: translateY(1px);
+}
+
+/* Glow effect for text */
+@keyframes textGlow {
+  0% { text-shadow: 0 0 4px rgba(255, 42, 109, 0.5); }
+  50% { text-shadow: 0 0 12px rgba(255, 42, 109, 0.8); }
+  100% { text-shadow: 0 0 4px rgba(255, 42, 109, 0.5); }
+}
+
+.logo-text {
+  animation: textGlow 3s infinite ease-in-out;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .navbar-container {
+    padding: 0 16px;
+  }
+  
+  .user-profile span {
+    display: none; /* Hide username on small screens */
+  }
+  
+  .logout-button {
+    padding: 8px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    padding: 12px 0;
+  }
+  
+  .logo-text span {
+    font-size: 18px;
+  }
+  
+  .logo-accent {
+    font-size: 22px;
+  }
 }
