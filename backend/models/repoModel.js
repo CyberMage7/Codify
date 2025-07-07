@@ -9,6 +9,7 @@ const RepositorySchema = new Schema({
   },
   description: {
     type: String,
+    default: '',
   },
   content: [
     {
@@ -30,6 +31,25 @@ const RepositorySchema = new Schema({
       ref: "Issue",
     },
   ],
+  // New fields for NewVault form
+  primaryLanguage: {
+    type: String,
+    default: 'JavaScript',
+  },
+  addReadme: {
+    type: Boolean,
+    default: false,
+  },
+  addGitignore: {
+    type: Boolean,
+    default: false,
+  },
+  gitignoreTemplate: {
+    type: String,
+    default: 'Node',
+  },
+}, { 
+  timestamps: true // This adds createdAt and updatedAt automatically
 });
 
 const Repository = mongoose.model("Repository", RepositorySchema);

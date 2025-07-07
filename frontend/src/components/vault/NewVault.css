@@ -1016,6 +1016,26 @@
   color: rgba(255, 255, 255, 0.9);
 }
 
+/* Input and Textarea Styles */
+.new-vault-container input::placeholder {
+  color: #a0aec0;
+  font-weight: normal;
+}
+
+.new-vault-container textarea::placeholder {
+  color: #94a3b8;
+  font-style: italic;
+  transition: opacity 0.5s ease;
+}
+
+.new-vault-container textarea:focus::placeholder {
+  opacity: 0.7;
+}
+
+.new-vault-container textarea:focus {
+  background-color: #fefefe;
+}
+
 /* Additional Animations */
 @keyframes checkBounce {
   0% {

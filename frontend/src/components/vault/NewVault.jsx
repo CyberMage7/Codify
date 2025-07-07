@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Box, Text, TextInput, Textarea, Button, FormControl } from '@primer/react';
+import { Box, Text, Button, FormControl } from '@primer/react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../Navbar';
 import './NewVault.css';
@@ -153,13 +153,70 @@ const NewVault = () => {
     if (!validateForm()) return;
 
     setLoading(true);
-    
-    // Simulate API call for now
-    setTimeout(() => {
-      console.log('Form submitted:', formData);
-      alert('Vault created successfully! (This is a demo)');
-      navigate('/dashboard');
-    }, 2000);
+    setErrors({});
+
+    try {
+      // Get user ID from localStorage
+      let userID = localStorage.getItem('userID');
+      if (!userID) {
+        // For testing purposes, set a test userID
+        userID = '507f1f77bcf86cd799439011'; // Valid MongoDB ObjectId format
+        localStorage.setItem('userID', userID);
+        console.log('Set test userID:', userID);
+      }
+      console.log('Using userID:', userID);
+
+      // Prepare the data for the backend
+      const requestData = {
+        owner: userID,
+        name: formData.name.trim(),
+        description: formData.description.trim(),
+        visibility: formData.visibility,
+        primaryLanguage: formData.primaryLanguage,
+        addReadme: formData.addReadme,
+        addGitignore: formData.addGitignore,
+        gitignoreTemplate: formData.gitignoreTemplate
+      };
+
+      console.log('Sending request to backend:', requestData);
+      
+      const response = await fetch('http://localhost:3000/repo/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      });
+
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
+      
+      const data = await response.json();
+      console.log('Response data:', data);
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to create vault');
+      }
+
+      // Success! Show success message and navigate to dashboard
+      console.log('Vault created successfully:', data.repository);
+      
+      // Show success message
+      alert(`🎉 Vault "${data.repository.name}" created successfully!`);
+      
+      // Navigate to dashboard after a short delay
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 1000);
+      
+    } catch (error) {
+      console.error('Error creating vault:', error.message);
+      setErrors({ 
+        general: error.message || 'Failed to create vault. Please try again.' 
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -247,9 +304,9 @@ const NewVault = () => {
             {/* Form content remains the same but with updated styling */}
             
             {/* Vault Name Section */}
-            <FormControl sx={{ mb: 4 }}>
+            <Box sx={{ mb: 4 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <FormControl.Label sx={{ 
+                <Text sx={{ 
                   fontWeight: 'bold', 
                   color: '#24292e',
                   fontSize: 18,
@@ -258,7 +315,7 @@ const NewVault = () => {
                 }}>
                   🏛️ Vault Name 
                   <span style={{ color: '#ff4757', marginLeft: '4px' }}>*</span>
-                </FormControl.Label>
+                </Text>
                 
                 {/* Tooltip */}
                 <Box sx={{ position: 'relative', ml: 2 }}>
@@ -365,11 +422,12 @@ const NewVault = () => {
                 
                 {/* Input Field */}
                 <Box sx={{ flex: 1, position: 'relative' }}>
-                  <TextInput
+                  <input
+                    type="text"
                     value={formData.name}
                     onChange={handleNameChange}
                     placeholder="e.g. codify-core 🚀"
-                    sx={{ 
+                    style={{ 
                       fontSize: 18,
                       fontWeight: 'bold',
                       backgroundColor: 'transparent',
@@ -378,10 +436,7 @@ const NewVault = () => {
                       color: '#24292e',
                       width: '100%',
                       padding: '12px 16px',
-                      '&::placeholder': {
-                        color: '#a0aec0',
-                        fontWeight: 'normal'
-                      }
+                      fontFamily: 'inherit'
                     }}
                   />
                 </Box>
@@ -454,12 +509,12 @@ const NewVault = () => {
                   code-wizard-2024
                 </span> ✨
               </Text>
-            </FormControl>
+            </Box>
 
             {/* Description */}
-            <FormControl sx={{ mb: 4, width: '100%' }}>
+            <Box sx={{ mb: 4, width: '100%' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <FormControl.Label sx={{ 
+                <Text sx={{ 
                   fontWeight: 'bold', 
                   color: '#24292e',
                   fontSize: 18,
@@ -470,7 +525,7 @@ const NewVault = () => {
                   <span style={{ color: '#586069', fontWeight: 'normal', fontSize: '16px', marginLeft: '8px' }}>
                     (optional)
                   </span>
-                </FormControl.Label>
+                </Text>
                 
                 {/* Tooltip for Description */}
                 <Box sx={{ position: 'relative', ml: 2 }}>
@@ -550,13 +605,13 @@ const NewVault = () => {
                   transform: 'translateY(-2px)'
                 }
               }}>
-                <Textarea
+                <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   placeholder={descriptionPlaceholders[placeholderIndex]}
                   rows={6}
                   className="vault-textarea-enhanced"
-                  sx={{ 
+                  style={{ 
                     width: '100%',
                     backgroundColor: '#ffffff',
                     border: 'none',
@@ -569,18 +624,7 @@ const NewVault = () => {
                     resize: 'vertical',
                     minHeight: '150px',
                     outline: 'none',
-                    boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.02)',
-                    '&::placeholder': {
-                      color: '#94a3b8',
-                      fontStyle: 'italic',
-                      transition: 'opacity 0.5s ease'
-                    },
-                    '&:focus': {
-                      backgroundColor: '#fefefe',
-                      '&::placeholder': {
-                        opacity: 0.7
-                      }
-                    }
+                    boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.02)'
                   }}
                 />
                 
@@ -665,18 +709,18 @@ const NewVault = () => {
                   </Box>
                 </Box>
               )}
-            </FormControl>
+            </Box>
 
             {/* Visibility */}
-            <FormControl sx={{ mb: 4 }}>
-              <FormControl.Label sx={{ 
+            <Box sx={{ mb: 4 }}>
+              <Text sx={{ 
                 fontWeight: 'bold', 
                 mb: 2, 
                 color: '#24292e',
                 fontSize: 18
               }}>
                 Visibility
-              </FormControl.Label>
+              </Text>
               <Box sx={{ display: 'flex', gap: 3 }}>
                 <Box 
                   className={`visibility-card-light ${formData.visibility ? 'selected' : ''}`}
@@ -747,11 +791,11 @@ const NewVault = () => {
                   </Text>
                 </Box>
               </Box>
-            </FormControl>
+            </Box>
 
             {/* Primary Language Section */}
-            <FormControl sx={{ mb: 4 }}>
-              <FormControl.Label sx={{ 
+            <Box sx={{ mb: 4 }}>
+              <Text sx={{ 
                 fontWeight: 'bold', 
                 mb: 2, 
                 color: '#24292e',
@@ -759,13 +803,22 @@ const NewVault = () => {
               }}>
                 Primary Language
                 <Text sx={{ fontSize: '0.9rem', color: '#6a737d', ml: 1 }}>*</Text>
-              </FormControl.Label>
+              </Text>
               
               {/* Custom Language Dropdown */}
               <div className="custom-language-dropdown" ref={languageDropdownRef}>
                 <div 
                   className={`language-dropdown-trigger ${showLanguageDropdown ? 'active' : ''}`}
                   onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Select primary language"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setShowLanguageDropdown(!showLanguageDropdown);
+                    }
+                  }}
                 >
                   <div className="selected-language">
                     <span className="language-icon">
@@ -782,15 +835,23 @@ const NewVault = () => {
                 
                 {showLanguageDropdown && (
                   <div className="language-dropdown-options">
-                    {languages.map((language) => (
-                      <div
-                        key={language.name}
-                        className={`language-option ${formData.primaryLanguage === language.name ? 'selected' : ''}`}
-                        onClick={() => {
-                          setFormData({ ...formData, primaryLanguage: language.name });
-                          setShowLanguageDropdown(false);
-                        }}
-                      >
+                    {languages.map((language) => (                        <div
+                          key={language.name}
+                          className={`language-option ${formData.primaryLanguage === language.name ? 'selected' : ''}`}
+                          onClick={() => {
+                            setFormData({ ...formData, primaryLanguage: language.name });
+                            setShowLanguageDropdown(false);
+                          }}
+                          role="option"
+                          tabIndex={0}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              setFormData({ ...formData, primaryLanguage: language.name });
+                              setShowLanguageDropdown(false);
+                            }
+                          }}
+                        >
                         <span className="language-icon">{language.icon}</span>
                         <span className="language-name">{language.name}</span>
                         {formData.primaryLanguage === language.name && (
@@ -801,11 +862,11 @@ const NewVault = () => {
                   </div>
                 )}
               </div>
-            </FormControl>
+            </Box>
 
             {/* Initialize Options - Enhanced */}
-            <FormControl sx={{ mb: 4 }}>
-              <FormControl.Label sx={{ 
+            <Box sx={{ mb: 4 }}>
+              <Text sx={{ 
                 fontWeight: 'bold', 
                 mb: 3, 
                 color: '#24292e',
@@ -826,7 +887,7 @@ const NewVault = () => {
                 }}>
                   Optional but recommended
                 </Box>
-              </FormControl.Label>
+              </Text>
               
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                 {/* README Option */}
@@ -1051,35 +1112,44 @@ const NewVault = () => {
                     borderRadius: '12px',
                     animation: 'slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                   }}>
-                    <Text sx={{ 
-                      fontWeight: 'bold', 
-                      mb: 2, 
-                      color: '#1e293b',
-                      fontSize: 16,
-                      display: 'flex',
-                      alignItems: 'center'
-                    }}>
-                      🎯 Choose .gitignore template:
-                      <Box sx={{
-                        ml: 2,
-                        padding: '2px 8px',
-                        backgroundColor: '#fef3f2',
-                        border: '1px solid #f87171',
-                        borderRadius: '12px',
-                        fontSize: '10px',
-                        color: '#dc2626',
-                        fontWeight: 'normal'
+                    <Box>
+                      <Text sx={{ 
+                        fontWeight: 'bold', 
+                        mb: 2, 
+                        color: '#1e293b',
+                        fontSize: 16,
+                        display: 'flex',
+                        alignItems: 'center'
                       }}>
-                        RECOMMENDED
-                      </Box>
-                    </Text>
-                    
-                    {/* Custom Gitignore Dropdown */}
-                    <div className="custom-gitignore-dropdown" ref={gitignoreDropdownRef}>
-                      <div 
-                        className={`gitignore-dropdown-trigger ${showGitignoreDropdown ? 'active' : ''}`}
-                        onClick={() => setShowGitignoreDropdown(!showGitignoreDropdown)}
-                      >
+                        🎯 Choose .gitignore template:
+                        <Box sx={{
+                          ml: 2,
+                          padding: '2px 8px',
+                          backgroundColor: '#fef3f2',
+                          border: '1px solid #f87171',
+                          borderRadius: '12px',
+                          fontSize: '10px',
+                          color: '#dc2626',
+                          fontWeight: 'normal'
+                        }}>
+                          RECOMMENDED
+                        </Box>
+                      </Text>
+                      
+                      {/* Custom Gitignore Dropdown */}
+                      <div className="custom-gitignore-dropdown" ref={gitignoreDropdownRef}>                        <div 
+                          className={`gitignore-dropdown-trigger ${showGitignoreDropdown ? 'active' : ''}`}
+                          onClick={() => setShowGitignoreDropdown(!showGitignoreDropdown)}
+                          role="button"
+                          tabIndex={0}
+                          aria-label="Select gitignore template"
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              setShowGitignoreDropdown(!showGitignoreDropdown);
+                            }
+                          }}
+                        >
                         <div className="selected-template">
                           <span className="template-icon">
                             {gitignoreTemplates.find(template => template.name === formData.gitignoreTemplate)?.icon || '📁'}
@@ -1108,6 +1178,15 @@ const NewVault = () => {
                                 setFormData({ ...formData, gitignoreTemplate: template.name });
                                 setShowGitignoreDropdown(false);
                               }}
+                              role="option"
+                              tabIndex={0}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                  e.preventDefault();
+                                  setFormData({ ...formData, gitignoreTemplate: template.name });
+                                  setShowGitignoreDropdown(false);
+                                }
+                              }}
                             >
                               <span className="template-icon">{template.icon}</span>
                               <div className="template-info">
@@ -1122,10 +1201,27 @@ const NewVault = () => {
                         </div>
                       )}
                     </div>
+                    </Box>
                   </Box>
                 )}
               </Box>
-            </FormControl>
+            </Box>
+
+            {/* Error Display */}
+            {errors.general && (
+              <Box sx={{
+                padding: '12px 16px',
+                backgroundColor: '#ffeaea',
+                border: '1px solid #ff6b6b',
+                borderRadius: '8px',
+                color: '#d63031',
+                fontSize: '14px',
+                fontWeight: 'bold',
+                marginTop: '16px'
+              }}>
+                ❌ {errors.general}
+              </Box>
+            )}
 
             {/* Action Buttons */}
             <Box sx={{ 
