@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./dashboard.css";
 import Navbar from "../Navbar";
 import { Box, Text, ButtonGroup, Button } from "@primer/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // Dummy data for the demo
 const dummyVaults = [
@@ -148,6 +148,7 @@ const dummySuggestions = [
 
 const Dashboard = () => {
   const [userName] = useState('Vishwas');
+  const navigate = useNavigate();
 
   // Component for welcome section
   const WelcomeSection = () => (
@@ -206,7 +207,7 @@ const Dashboard = () => {
          <Box className="modern-button-grid">
            <Box 
              className="modern-button neon-blue" 
-             onClick={() => alert('New Vault action')}
+             onClick={() => navigate('/new-vault')}
              role="button"
              tabIndex={0}
            >

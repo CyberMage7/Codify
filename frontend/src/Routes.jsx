@@ -7,6 +7,7 @@ import Profile from "./components/user/Profile";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
 import RepoView from "./components/repo/RepoView";
+import NewVault from "./components/vault/NewVault";
 
 // Auth Context
 import { useAuth } from "./authContext";
@@ -46,6 +47,10 @@ const Routes = () => {
     {
       path: "/profile",
       element: <Profile />,
+    },
+    {
+      path: "/new-vault",
+      element: <NewVault />,
     },
     {
       path: "/repo/:repoId",
