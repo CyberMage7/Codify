@@ -47,22 +47,25 @@ const Login = () => {
 
   return (
     <div className="login-wrapper">
-      <div className="login-logo-container">
-        <img className="logo-login" src={logo} alt="Logo" />
-      </div>
+      {/* Floating Fun Elements */}
+      <div className="floating-emoji">👋</div>
+      <div className="floating-emoji">💻</div>
+      <div className="floating-emoji">🚀</div>
+      <div className="floating-emoji">⭐</div>
+      <div className="code-snippet">{"<Hello />"}</div>
+      <div className="code-snippet">{"git push"}</div>
+      <div className="code-snippet">{"npm install"}</div>
 
       <div className="login-box-wrapper">
-        <div className="login-heading">
-          <Box sx={{ padding: 1 }}>
-            <PageHeader>
-              <PageHeader.TitleArea variant="large">
-                <PageHeader.Title>Sign In</PageHeader.Title>
-              </PageHeader.TitleArea>
-            </PageHeader>
-          </Box>
+        <div className="welcome-message">
+          👋 Hey Coder, welcome back!
         </div>
+        <div className="welcome-subtitle">
+          Let's get you back into the coding zone 🎯
+        </div>
+
         <div className="login-box">
-          <div>
+          <div className="input-group">
             <label className="label">Email address</label>
             <input
               autoComplete="off"
@@ -70,11 +73,13 @@ const Login = () => {
               id="Email"
               className="input"
               type="email"
+              placeholder="your-email@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          <div className="div">
+          
+          <div className="input-group">
             <label className="label">Password</label>
             <input
               autoComplete="off"
@@ -82,23 +87,31 @@ const Login = () => {
               id="Password"
               className="input"
               type="password"
+              placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
 
-          <Button
-            variant="primary"
-            className="login-btn"
+          <button
+            className="submit-btn login-btn"
             disabled={loading}
             onClick={handleLogin}
           >
-            {loading ? "Loading..." : "Login"}
-          </Button>
+            {loading ? (
+              <>
+                <span className="loading-spinner"></span>
+                Signing you in...
+              </>
+            ) : (
+              "🚀 Let's Code!"
+            )}
+          </button>
         </div>
+        
         <div className="pass-box">
           <p>
-            New to GitHub? <Link to="/signup">Create an account</Link>
+            New to Codify? <Link to="/signup">Join the community! 🎉</Link>
           </p>
         </div>
       </div>

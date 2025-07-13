@@ -48,23 +48,25 @@ const Signup = () => {
 
   return (
     <div className="login-wrapper">
-      <div className="login-logo-container">
-        <img className="logo-login" src={logo} alt="Logo" />
-      </div>
+      {/* Floating Fun Elements */}
+      <div className="floating-emoji">🎉</div>
+      <div className="floating-emoji">💻</div>
+      <div className="floating-emoji">🌟</div>
+      <div className="floating-emoji">🚀</div>
+      <div className="code-snippet">{"const dev = new Developer()"}</div>
+      <div className="code-snippet">{"git init"}</div>
+      <div className="code-snippet">{"npm create"}</div>
 
       <div className="login-box-wrapper">
-        <div className="login-heading">
-          <Box sx={{ padding: 1 }}>
-            <PageHeader>
-              <PageHeader.TitleArea variant="large">
-                <PageHeader.Title>Sign Up</PageHeader.Title>
-              </PageHeader.TitleArea>
-            </PageHeader>
-          </Box>
+        <div className="welcome-message">
+          🎉 Join the Codify Family!
+        </div>
+        <div className="welcome-subtitle">
+          Ready to start your coding journey? Let's create magic together! ✨
         </div>
 
         <div className="login-box">
-          <div>
+          <div className="input-group">
             <label className="label">Username</label>
             <input
               autoComplete="off"
@@ -72,12 +74,13 @@ const Signup = () => {
               id="Username"
               className="input"
               type="text"
+              placeholder="your-awesome-username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
 
-          <div>
+          <div className="input-group">
             <label className="label">Email address</label>
             <input
               autoComplete="off"
@@ -85,12 +88,13 @@ const Signup = () => {
               id="Email"
               className="input"
               type="email"
+              placeholder="your-email@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
-          <div className="div">
+          <div className="input-group">
             <label className="label">Password</label>
             <input
               autoComplete="off"
@@ -98,24 +102,31 @@ const Signup = () => {
               id="Password"
               className="input"
               type="password"
+              placeholder="Create a strong password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
 
-          <Button
-            variant="primary"
-            className="login-btn"
+          <button
+            className="submit-btn signup-button"
             disabled={loading}
             onClick={handleSignup}
           >
-            {loading ? "Loading..." : "Signup"}
-          </Button>
+            {loading ? (
+              <>
+                <span className="loading-spinner"></span>
+                Creating your account...
+              </>
+            ) : (
+              "🚀 Start Coding!"
+            )}
+          </button>
         </div>
 
         <div className="pass-box">
           <p>
-            Already have an account? <Link to="/auth">Login</Link>
+            Already part of the family? <Link to="/auth">Welcome back! 👋</Link>
           </p>
         </div>
       </div>
